@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/cocina/pedidos/{{id_pedido}}/preparar"
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_cocina}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Pedido en preparacion', function () {
+        pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 3000

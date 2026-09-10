@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{base_url}}/detalle-pedido/"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "id_pedido": {{id_pedido}},
+      "id_producto": {{id_producto}},
+      "cantidad": 1
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_mesero}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Producto agregado al pedido', function () {
+        pm.response.to.have.status(200);
+      });
+      const data = pm.response.json();
+      pm.environment.set('id_detalle', data.id_detalle);
+    language: text/javascript
+order: 4000

@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: fab7411b-3920-4fbc-80a2-c7b9f94f9028
+
+localResources:
+  collections:
+    - ../docs/postman/cafeteria-api-movil.postman_collection.json
+  environments:
+    - ../docs/postman/cafeteria-api-movil.postman_environment.json
+
+cloudResources:
+  collections:
+    ../postman/collections/Cafeteria API Movil: d0e31d9b-1e19-4b6f-8b39-a984ea3ab0af

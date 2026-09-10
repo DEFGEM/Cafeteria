@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/x-www-form-urlencoded
+body:
+  type: urlencoded
+  content:
+    grant_type: password
+    username: "{{email_mesero}}"
+    password: "{{password_mesero}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Login mesero correcto', function () {
+        pm.response.to.have.status(200);
+      });
+      const data = pm.response.json();
+      pm.environment.set('token_mesero', data.access_token);
+    language: text/javascript
+order: 1000

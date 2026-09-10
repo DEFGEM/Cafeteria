@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Node / Expo
+node_modules/
+dist/
+.expo/
+*.log
+
+# Entornos locales (los .env.example sí se versionan)
+.env
+.env.local

@@ -1,0 +1,30 @@
+name: Cafeteria API Movil - Local
+values:
+  - key: base_url
+    value: 'http://127.0.0.1:8000'
+  - key: email_mesero
+    value: 'mesero@cafeteria.local'
+  - key: password_mesero
+    value: 'Mesero123!'
+  - key: email_cocina
+    value: 'cocina@cafeteria.local'
+  - key: password_cocina
+    value: 'Cocina123!'
+  - key: email_caja
+    value: 'caja@cafeteria.local'
+  - key: password_caja
+    value: 'Caja123!'
+  - key: token_mesero
+    value: ''
+  - key: token_cocina
+    value: ''
+  - key: token_caja
+    value: ''
+  - key: id_mesa
+    value: '3'
+  - key: id_producto
+    value: '3'
+  - key: id_pedido
+    value: ''
+  - key: id_detalle
+    value: ''

@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/cocina/pedidos"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_cocina}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Pedidos visibles para cocina', function () {
+        pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 1000

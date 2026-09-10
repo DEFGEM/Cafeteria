@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/caja/pedidos/{{id_pedido}}/detalle"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_caja}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Detalle visible para caja', function () {
+        pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 2000

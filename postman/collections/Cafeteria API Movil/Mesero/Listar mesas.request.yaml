@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/mesas/"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_mesero}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Mesas disponibles para mesero', function () {
+        pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 1000
