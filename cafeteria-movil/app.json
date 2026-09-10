@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "CAFEINABLE",
+    "slug": "cafeinable",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/CAFEINABLE-icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/CAFEINABLE-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.defgem.cafeinable",
+      "softwareKeyboardLayoutMode": "resize",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/CAFEINABLE-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ddb0797d-54ba-494a-994a-19dbd97358ab"
+      }
+    },
+    "owner": "fernandobe1312"
+  }
+}
