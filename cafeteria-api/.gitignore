@@ -1,0 +1,60 @@
+# Entorno virtual
+venv/
+.venv/
+
+# Variables de entorno
+.env
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos compilados
+*.so
+
+# Alembic
+alembic/versions/__pycache__/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Archivos de Python
+.python-version
+
+# Archivos de pruebas
+.pytest_cache/
+
+# Cobertura
+.coverage
+htmlcov/
+
+# Archivos cargados en tiempo de ejecución
+uploads/*
+!uploads/.gitkeep
+
+# Distribución
+build/
+dist/
+*.egg-info/
+
+# Base de datos SQLite (por si la usas)
+*.db
+*.sqlite3
