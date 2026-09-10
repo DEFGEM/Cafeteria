@@ -40,6 +40,8 @@ from app.routers import preferencias_negocio
 
 from pathlib import Path
 
+import os
+
 from fastapi.responses import FileResponse
 
 @asynccontextmanager
@@ -62,8 +64,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-UPLOADS_DIR = Path("uploads").resolve()
-UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+def _resolver_uploads_dir() -> Path:
+    # Vercel tiene filesystem de solo lectura salvo /tmp.
+    # Las imágenes subidas ahí son efímeras (se pierden entre deploys).
+    if os.getenv("UPLOADS_DIR"):
+        base = Path(os.getenv("UPLOADS_DIR"))
+    elif os.getenv("VERCEL"):
+        base = Path("/tmp/uploads")
+    else:
+        base = Path("uploads")
+    base.mkdir(parents=True, exist_ok=True)
+    return base.resolve()
+
+
+UPLOADS_DIR = _resolver_uploads_dir()
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 
 

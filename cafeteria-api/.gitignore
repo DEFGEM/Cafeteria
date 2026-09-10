@@ -36,8 +36,8 @@ Desktop.ini
 # macOS
 .DS_Store
 
-# Archivos de Python
-.python-version
+# Archivos de Python (NOTA: .python-version SÍ se versiona: Vercel lo usa
+# para fijar el runtime 3.12/3.13/3.14)
 
 # Archivos de pruebas
 .pytest_cache/

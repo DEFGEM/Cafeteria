@@ -54,6 +54,18 @@ def _detectar_extension_imagen(contenido: bytes) -> str | None:
     return None
 
 
+def _directorio_uploads() -> Path:
+    # Mismo criterio que app/main.py: en Vercel solo /tmp es escribible.
+    if os.getenv("UPLOADS_DIR"):
+        base = Path(os.getenv("UPLOADS_DIR"))
+    elif os.getenv("VERCEL"):
+        base = Path("/tmp/uploads")
+    else:
+        base = Path("uploads")
+    os.makedirs(base, exist_ok=True)
+    return base
+
+
 def _guardar_imagen(imagen: UploadFile) -> str:
     contenido = imagen.file.read(MAX_IMAGE_BYTES + 1)
     if len(contenido) > MAX_IMAGE_BYTES:
@@ -64,11 +76,13 @@ def _guardar_imagen(imagen: UploadFile) -> str:
             status_code=422,
             detail="Solo se permiten imágenes PNG, JPEG, GIF o WebP válidas.",
         )
-    os.makedirs("uploads", exist_ok=True)
-    ruta = Path("uploads") / f"{uuid4().hex}{extension}"
+    directorio = _directorio_uploads()
+    ruta = directorio / f"{uuid4().hex}{extension}"
     with ruta.open("wb") as archivo:
         archivo.write(contenido)
-    return ruta.as_posix()
+    # Se guarda con prefijo "uploads/..." para mantener compatibilidad con
+    # web/móvil (construyen API_URL + "/" + path) y con GET /uploads/{filename}.
+    return f"uploads/{ruta.name}"
 
 
 @router.get("/", response_model=list[ProductoResponse])
