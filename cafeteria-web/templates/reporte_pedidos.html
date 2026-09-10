@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/icons.css') }}">
+  <title>CoffeeAdmin - Reporte de Pedidos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #f5e6c8, #fdf6e9);
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 32px 36px;
+      box-shadow: 0 12px 40px rgba(107, 68, 35, 0.12);
+      border: 1px solid rgba(232, 220, 200, 0.5);
+    }
+
+    /* Título */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid rgba(107, 68, 35, 0.12);
+    }
+
+    .page-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #6b4423;
+      letter-spacing: -0.3px;
+    }
+
+    .page-header .count-badge {
+      background: #6b4423;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 40px;
+      margin-left: 4px;
+    }
+
+    /* Formulario de filtros */
+    .filters-form {
+      background: rgba(255, 248, 240, 0.6);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      border: 1px solid #e8dcc8;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 20px;
+    }
+
+    .filters-form input,
+    .filters-form select {
+      background: white;
+      border: 1px solid #e0d3c0;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #3d2c1e;
+      outline: none;
+      transition: all 0.2s;
+      flex: 1 1 160px;
+      min-width: 140px;
+    }
+
+    .filters-form input:focus,
+    .filters-form select:focus {
+      border-color: #6b4423;
+      box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.15);
+    }
+
+    .filters-form input::placeholder {
+      color: #b8a48c;
+    }
+
+    .filters-form input[type="date"] {
+      min-width: 150px;
+      flex: 1 1 150px;
+    }
+
+    .filters-form button[type="submit"] {
+      background: #6b4423;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(107, 68, 35, 0.25);
+    }
+
+    .filters-form button[type="submit"]:hover {
+      background: #5a3a1d;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(107, 68, 35, 0.35);
+    }
+
+    .filters-form a {
+      text-decoration: none;
+    }
+
+    .filters-form a button[type="button"] {
+      background: transparent;
+      color: #6b4423;
+      border: 1.5px solid #d4c4b0;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filters-form a button[type="button"]:hover {
+      background: rgba(107, 68, 35, 0.08);
+      border-color: #6b4423;
+    }
+
+    /* Tabla */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid #e8dcc8;
+      background: rgba(255, 255, 255, 0.5);
+      margin-bottom: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: rgba(107, 68, 35, 0.06);
+      border-bottom: 2px solid #e8dcc8;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 16px 18px;
+      font-weight: 700;
+      color: #5a4a3a;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(232, 220, 200, 0.4);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(107, 68, 35, 0.04);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody td {
+      padding: 16px 18px;
+      color: #3d2c1e;
+      vertical-align: middle;
+    }
+
+    /* Badges de estado */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-pendiente {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .status-preparando {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .status-entregado {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .status-cancelado {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .table-cell-mesa {
+      font-weight: 600;
+      color: #4a3726;
+    }
+
+    .table-cell-total {
+      font-weight: 600;
+      color: #6b4423;
+    }
+
+    .table-cell-fecha {
+      color: #8b7355;
+      font-weight: 500;
+    }
+
+    /* Botones de exportación */
+    .export-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 8px;
+      border-top: 1px solid #e8dcc8;
+    }
+
+    #btnPDF {
+      background: #b45309;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #btnPDF:hover {
+      background: #92400e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(180, 83, 9, 0.3);
+    }
+
+    #btnExcel {
+      background: #1d7a4a;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #btnExcel:hover {
+      background: #15643b;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(29, 122, 74, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 16px;
+      }
+
+      .filters-form {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+      }
+
+      .filters-form input,
+      .filters-form select {
+        flex: 1 1 auto;
+        min-width: 100%;
+      }
+
+      .filters-form input[type="date"] {
+        min-width: 100%;
+      }
+
+      .filters-form button[type="submit"],
+      .filters-form a button[type="button"] {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .page-header {
+        flex-wrap: wrap;
+      }
+
+      .page-header h2 {
+        font-size: 22px;
+      }
+
+      .export-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      #btnPDF,
+      #btnExcel {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 16px 12px;
+      }
+
+      thead th,
+      tbody td {
+        padding: 12px 10px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Título con contador -->
+    <div class="page-header">
+      <h2><i class="bi bi-clipboard2-data ui-icon" aria-hidden="true"></i> Reporte de Pedidos</h2>
+      <span class="count-badge">8 pedidos</span>
+    </div>
+
+    <!-- Formulario de filtros (sin cambios en estructura) -->
+    <form method="GET" class="filters-form">
+      <select name="estado">
+        <option value="">Todos los estados</option>
+        <option value="Pendiente"
+          {% if request.args.get("estado")=="Pendiente" %}selected{% endif %}>
+          Pendiente
+        </option>
+        <option value="Preparando"
+          {% if request.args.get("estado")=="Preparando" %}selected{% endif %}>
+          Preparando
+        </option>
+        <option value="Entregado"
+          {% if request.args.get("estado")=="Entregado" %}selected{% endif %}>
+          Entregado
+        </option>
+        <option value="Cancelado"
+          {% if request.args.get("estado")=="Cancelado" %}selected{% endif %}>
+          Cancelado
+        </option>
+      </select>
+
+      <select name="id_mesa">
+        <option value="">Todas las mesas</option>
+        {% for mesa in mesas %}
+        <option
+          value="{{ mesa.id_mesa }}"
+          {% if request.args.get("id_mesa")==mesa.id_mesa|string %}selected{% endif %}>
+          Mesa {{ mesa.numero }}
+        </option>
+        {% endfor %}
+      </select>
+
+      <input
+        type="date"
+        name="fecha_inicio"
+        value="{{ request.args.get('fecha_inicio','') }}">
+
+      <input
+        type="date"
+        name="fecha_fin"
+        value="{{ request.args.get('fecha_fin','') }}">
+
+      <button type="submit"><i class="bi bi-search ui-icon" aria-hidden="true"></i> Buscar</button>
+
+      <a href="{{ url_for('reporte_pedidos') }}">
+        <button type="button"><i class="bi bi-eraser ui-icon" aria-hidden="true"></i> Limpiar filtros</button>
+      </a>
+    </form>
+
+    <!-- Tabla de pedidos -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mesa</th>
+            <th>Estado</th>
+            <th>Total</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pedido in pedidos %}
+          <tr>
+            <td class="table-cell-mesa">Mesa {{ pedido.mesa.numero }}</td>
+            <td>
+              {% if pedido.estado == "Pendiente" %}
+              <span class="status-badge status-pendiente">⏳ Pendiente</span>
+              {% elif pedido.estado == "Preparando" %}
+              <span class="status-badge status-preparando"><i class="bi bi-person-workspace ui-icon" aria-hidden="true"></i> Preparando</span>
+              {% elif pedido.estado == "Entregado" %}
+              <span class="status-badge status-entregado"><i class="bi bi-check-circle ui-icon" aria-hidden="true"></i> Entregado</span>
+              {% elif pedido.estado == "Cancelado" %}
+              <span class="status-badge status-cancelado"><i class="bi bi-x-circle ui-icon" aria-hidden="true"></i> Cancelado</span>
+              {% else %}
+              <span class="status-badge">{{ pedido.estado }}</span>
+              {% endif %}
+            </td>
+            <td class="table-cell-total">${{ pedido.total }}</td>
+            <td class="table-cell-fecha">{{ pedido.fecha }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Botones de exportación -->
+    <div class="export-section">
+      <button id="btnPDF"><i class="bi bi-file-earmark-pdf ui-icon" aria-hidden="true"></i> Exportar PDF</button>
+      <button id="btnExcel"><i class="bi bi-bar-chart ui-icon" aria-hidden="true"></i> Exportar Excel</button>
+    </div>
+  </div>
+
+  <a href="{{ url_for('reportes') }}">
+        <button type="button">
+            ⬅️ Regresar
+        </button>
+    </a>
+
+  <!-- Script sin cambios -->
+  <script>
+    function obtenerFiltros(){
+      const params = new URLSearchParams();
+      const estado = document.querySelector("[name=estado]").value;
+      const mesa = document.querySelector("[name=id_mesa]").value;
+      const inicio = document.querySelector("[name=fecha_inicio]").value;
+      const fin = document.querySelector("[name=fecha_fin]").value;
+
+      if(estado) params.append("estado", estado);
+      if(mesa) params.append("id_mesa", mesa);
+      if(inicio) params.append("fecha_inicio", inicio);
+      if(fin) params.append("fecha_fin", fin);
+
+      return params.toString();
+    }
+
+    document.getElementById("btnPDF").onclick = function(){
+      location.href = "/reportes/pedidos/pdf?" + obtenerFiltros();
+    }
+
+    document.getElementById("btnExcel").onclick = function(){
+      location.href = "/reportes/pedidos/excel?" + obtenerFiltros();
+    }
+  </script>
+</body>
+</html>

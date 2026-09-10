@@ -1,0 +1,255 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #f5e6c8, #fdf6e9);
+      display: flex;
+    }
+
+    /* ==========================================================================
+       BARRA LATERAL (SIDEBAR) - Estilo ID idéntico a imagen 6235680167646741248.jpeg
+       ========================================================================== */
+    aside {
+      width: 260px;
+      background: #6b4423;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 12px;
+      margin-bottom: 40px;
+    }
+    .sidebar-logo svg { width: 28px; height: 28px; }
+    .sidebar-logo h1 { font-size: 20px; font-weight: bold; }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .sidebar-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .sidebar-item a:hover,
+    .sidebar-item.active a {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-item.active a {
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       ÁREA DE CONTENIDO PRINCIPAL
+       ========================================================================== */
+    .main-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0; /* Evita desborde de flex items */
+    }
+
+    /* Top Bar */
+    header {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e8dcc8;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: #6b4423;
+      cursor: pointer;
+    }
+    .menu-toggle svg { width: 24px; height: 24px; }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #6b4423;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: #8b7355;
+      border-radius: 50%;
+    }
+
+    /* Contenedor de Bloques */
+    .content-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-title h2 {
+      font-size: 24px;
+      color: #6b4423;
+      font-weight: bold;
+    }
+
+    /* Módulo de Resumen de Métricas (Tarjetas superiores) */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .metric-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid #e8dcc8;
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .metric-card span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b7355;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #6b4423;
+      margin-top: 8px;
+    }
+    .metric-value.positive { color: #10b981; }
+    .metric-value.negative { color: #ef4444; }
+
+    /* ==========================================================================
+       RF-01 GRÁFICAS: SECCIÓN DE GANANCIAS Y PÉRDIDAS ESTÁTICAS
+       ========================================================================== */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 992px) {
+      .charts-grid { grid-template-columns: 2fr 1fr; }
+    }
+
+    .chart-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid #e8dcc8;
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .chart-header h3 { font-size: 16px; color: #6b4423; font-weight: bold; }
+    .chart-legend { display: flex; gap: 12px; font-size: 12px; font-weight: 600; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .dot-ganancia { width: 10px; height: 10px; background: #10b981; border-radius: 50%; }
+    .dot-perdida { width: 10px; height: 10px; background: #ef4444; border-radius: 50%; }
+
+    /* Simulación Visual de Gráfica de Barras con puro CSS */
+    .bar-chart-mock {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 220px;
+      padding-top: 20px;
+      border-bottom: 2px solid #e8dcc8;
+      gap: 16px;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .bars-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 100%;
+      width: 100%;
+      max-width: 50px;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      transition: opacity 0.2s;
+    }
+    .bar.ganancia { background: #10b981; }
+    .bar.perdida { background: #ef4444; }
+
+    .bar-label {
+      font-size: 12px;
+      color: #8b7355;
+      font-weight: 500;
+    }
+
+    /* Lista lateral de balances rápidos */
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: white;
+      border: 1px solid #e8dcc8;
+      border-radius: 12px;
+    }
+    .breakdown-item-info p { font-size: 14px; font-weight: 600; color: #6b4423; }
+    .breakdown-item-info span { font-size: 12px; color: #8b7355; }
+    .breakdown-amount { font-size: 14px; font-weight: 700; }
+    .breakdown-amount.plus { color: #10b981; }
+    .breakdown-amount.minus { color: #ef4444; }

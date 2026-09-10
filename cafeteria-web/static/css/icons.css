@@ -1,0 +1,40 @@
+.ui-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: -0.125em;
+}
+
+h1 .ui-icon,
+h2 .ui-icon,
+h3 .ui-icon,
+.panel-title .ui-icon,
+.section-title .ui-icon {
+  margin-right: 0.45rem;
+}
+
+button .ui-icon,
+a .ui-icon,
+.label .ui-icon,
+.status-badge .ui-icon,
+.badge-estado .ui-icon,
+.badge-mesa .ui-icon {
+  margin-right: 0.35rem;
+}
+
+.metric-icon .ui-icon,
+.report-icon .ui-icon,
+.export-icon .ui-icon,
+.empty-icon .ui-icon {
+  margin: 0;
+  font-size: inherit;
+}
+
+.alert-error .ui-icon,
+.alert-success .ui-icon,
+.flash-message .ui-icon {
+  margin-right: 0.4rem;
+}

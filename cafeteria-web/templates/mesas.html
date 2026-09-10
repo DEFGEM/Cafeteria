@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafeinable - Mesas</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root { --coffee:#6c3b2a; --coffee-dark:#3f2118; --cream:#f8f5f0; --card:#fff; --muted:#76665f; --line:#eadfd8; --success:#2e7d32; --danger:#c62828; --warning:#ef6c00; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--cream); color:#2d1b0f; }
+    .layout { min-height:100vh; display:grid; grid-template-columns:250px 1fr; }
+    aside { background:linear-gradient(180deg,var(--coffee-dark),var(--coffee)); color:white; padding:28px 20px; }
+    .brand { font-size:24px; font-weight:800; margin-bottom:32px; }
+    nav a { display:flex; gap:10px; align-items:center; color:#f7ece6; text-decoration:none; padding:12px 14px; border-radius:10px; margin:5px 0; }
+    nav a:hover, nav a.active { background:rgba(255,255,255,.14); }
+    main { padding:32px; max-width:1400px; width:100%; }
+    .topbar { display:flex; justify-content:space-between; gap:20px; align-items:center; margin-bottom:26px; }
+    h1,h2,p { margin-top:0; } .muted { color:var(--muted); }
+    .logout { color:var(--coffee); text-decoration:none; font-weight:700; }
+    .flash { padding:13px 16px; border-radius:10px; margin-bottom:16px; background:#fff; border:1px solid var(--line); }
+    .flash.success { border-color:#a5d6a7; color:var(--success); } .flash.danger { border-color:#ef9a9a; color:var(--danger); }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(130px,1fr)); gap:14px; margin-bottom:22px; }
+    .metric,.panel,.table-card { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 5px 20px rgba(63,33,24,.06); }
+    .metric { padding:18px; } .metric strong { display:block; font-size:28px; margin-top:4px; }
+    .content-grid { display:grid; grid-template-columns:minmax(250px,340px) 1fr; gap:20px; align-items:start; }
+    .panel { padding:22px; }
+    label { display:block; font-size:13px; font-weight:700; margin:14px 0 6px; }
+    input,select { width:100%; border:1px solid #d7c8c0; border-radius:9px; padding:11px 12px; background:#fff; font:inherit; }
+    button { border:0; border-radius:9px; padding:10px 14px; cursor:pointer; font-weight:700; }
+    .primary { width:100%; margin-top:18px; color:#fff; background:var(--coffee); }
+    .table-card { overflow:auto; } table { width:100%; border-collapse:collapse; min-width:720px; }
+    th,td { text-align:left; padding:15px; border-bottom:1px solid var(--line); vertical-align:middle; }
+    th { background:#fbf8f5; color:var(--muted); font-size:12px; text-transform:uppercase; }
+    .badge { display:inline-block; padding:5px 10px; border-radius:20px; font-size:12px; font-weight:800; }
+    .Libre { color:var(--success); background:#e8f5e9; } .Ocupada { color:var(--danger); background:#ffebee; } .Reservada { color:var(--warning); background:#fff3e0; }
+    .edit-form { display:grid; grid-template-columns:80px 90px 130px auto; gap:8px; align-items:center; }
+    .save { background:#e8f5e9; color:var(--success); } .delete { background:#ffebee; color:var(--danger); }
+    .empty { text-align:center; padding:48px 20px; color:var(--muted); }
+    @media(max-width:900px){ .layout{grid-template-columns:1fr} aside{position:static} nav{display:flex;flex-wrap:wrap}.content-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)} main{padding:20px} }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand"><i class="bi bi-cup-hot"></i> Cafeinable</div>
+      <nav>
+        {% if rol == 'administrador' %}<a href="{{ url_for('dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>{% endif %}
+        <a class="active" href="{{ url_for('panel_mesas') }}"><i class="bi bi-grid-3x3"></i> Mesas</a>
+        <a href="{{ url_for('pedidos') }}"><i class="bi bi-receipt"></i> Pedidos</a>
+        {% if rol == 'administrador' %}
+          <a href="{{ url_for('productos') }}"><i class="bi bi-cup-straw"></i> Productos</a>
+          <a href="{{ url_for('usuarios') }}"><i class="bi bi-people"></i> Usuarios</a>
+        {% endif %}
+      </nav>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div><h1>Administración de mesas</h1><p class="muted">Las mesas disponibles aquí son las mismas que utiliza la app móvil.</p></div>
+        <div><strong>{{ usuario }}</strong> · {{ rol }} &nbsp; <a class="logout" href="{{ url_for('logout') }}">Cerrar sesión</a></div>
+      </div>
+      {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}<div class="flash {{ categoria }}">{{ mensaje }}</div>{% endfor %}
+      {% endwith %}
+      <section class="metrics">
+        <div class="metric"><span class="muted">Total</span><strong>{{ estadisticas.total }}</strong></div>
+        <div class="metric"><span class="muted">Libres</span><strong>{{ estadisticas.libres }}</strong></div>
+        <div class="metric"><span class="muted">Ocupadas</span><strong>{{ estadisticas.ocupadas }}</strong></div>
+        <div class="metric"><span class="muted">Reservadas</span><strong>{{ estadisticas.reservadas }}</strong></div>
+      </section>
+      <div class="content-grid">
+        {% if rol == 'administrador' %}
+        <section class="panel">
+          <h2>Agregar mesa</h2>
+          <form method="post" action="{{ url_for('panel_mesas') }}">
+            <label for="numero">Número visible</label><input id="numero" name="numero" type="number" min="1" max="10000" required>
+            <label for="capacidad">Capacidad</label><input id="capacidad" name="capacidad" type="number" min="1" max="100" value="4" required>
+            <label for="estado">Estado inicial</label><select id="estado" name="estado"><option>Libre</option><option>Reservada</option><option>Ocupada</option></select>
+            <button class="primary" type="submit"><i class="bi bi-plus-lg"></i> Agregar mesa</button>
+          </form>
+        </section>
+        {% endif %}
+        <section class="table-card">
+          {% if mesas %}
+          <table>
+            <thead><tr><th>Mesa</th><th>Capacidad</th><th>Estado</th>{% if rol == 'administrador' %}<th>Editar</th><th>Acciones</th>{% endif %}</tr></thead>
+            <tbody>{% for mesa in mesas %}<tr>
+              <td><strong>Mesa {{ mesa.numero }}</strong><br><small class="muted">ID interno {{ mesa.id_mesa }}</small></td>
+              <td>{{ mesa.capacidad }} personas</td><td><span class="badge {{ mesa.estado }}">{{ mesa.estado }}</span></td>
+              {% if rol == 'administrador' %}
+              <td><form class="edit-form" method="post" action="{{ url_for('editar_mesa', id_mesa=mesa.id_mesa) }}">
+                <input aria-label="Número de Mesa {{ mesa.numero }}" name="numero" type="number" min="1" max="10000" value="{{ mesa.numero }}" required>
+                <input aria-label="Capacidad de Mesa {{ mesa.numero }}" name="capacidad" type="number" min="1" max="100" value="{{ mesa.capacidad }}" required>
+                <select aria-label="Estado de Mesa {{ mesa.numero }}" name="estado">{% for estado in ['Libre','Ocupada','Reservada'] %}<option {% if mesa.estado == estado %}selected{% endif %}>{{ estado }}</option>{% endfor %}</select>
+                <button class="save" type="submit">Guardar</button>
+              </form></td>
+              <td><form method="post" action="{{ url_for('eliminar_mesa', id_mesa=mesa.id_mesa) }}" onsubmit="return confirm('¿Eliminar la Mesa {{ mesa.numero }}?')"><button class="delete" type="submit">Eliminar</button></form></td>
+              {% endif %}
+            </tr>{% endfor %}</tbody>
+          </table>
+          {% else %}<div class="empty"><i class="bi bi-grid-3x3"></i><h2>No hay mesas registradas</h2><p>Agrega la primera mesa para que aparezca también en la app móvil.</p></div>{% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
